@@ -1,0 +1,39 @@
+# Datos: nunca subir datos clínicos
+data/raw/*
+data/interim/*
+data/processed/*
+data/sample/*
+!data/**/.gitkeep
+
+# Modelos y salidas pesadas
+models/*
+!models/.gitkeep
+
+# Python / Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+.env
+
+# Power BI temporales
+*.pbix.bak
+~$*
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Credenciales y configuración local
+.env
+.env.*
+!.env.example
+.claude/
+
+# Power BI: caché local (contiene datos) y binarios
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+*.pbix
+*.abf

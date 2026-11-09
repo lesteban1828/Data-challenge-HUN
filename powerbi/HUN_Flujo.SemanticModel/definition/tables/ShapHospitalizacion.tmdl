@@ -1,0 +1,26 @@
+table ShapHospitalizacion
+	lineageTag: ce43bfb5-f090-4ef0-85ac-b32e46727cf2
+
+	column variable
+		dataType: string
+		summarizeBy: none
+		sourceColumn: variable
+		lineageTag: 4109a6bc-7ab5-4a2b-abc5-39c80a04c2c7
+
+	column importancia_shap
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: importancia_shap
+		lineageTag: 1534a4f2-0e19-49ee-bf72-fb14757c49f1
+		formatString: 0.0
+
+	partition ShapHospitalizacion = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(Ruta & "ShapHospitalizacion.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"variable", type text}, {"importancia_shap", type number}}, "en-US")
+				in
+				    Tipos
+

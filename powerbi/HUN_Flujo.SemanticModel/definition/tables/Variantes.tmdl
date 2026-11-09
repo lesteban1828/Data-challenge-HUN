@@ -1,0 +1,39 @@
+table Variantes
+	lineageTag: 08ba5140-5a74-46bb-ab75-9db92011593c
+
+	column variante
+		dataType: string
+		summarizeBy: none
+		sourceColumn: variante
+		lineageTag: cffa54c9-6ca4-4caf-95d4-1a7ef17e354c
+
+	column n
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: n
+		lineageTag: f8b57a62-c4c3-4074-8e52-a91f0d27a3a9
+
+	column pct
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: pct
+		lineageTag: 88298d57-ed13-4267-a85f-532eca9474e5
+		formatString: 0.0
+
+	column pct_acum
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: pct_acum
+		lineageTag: 0bc126f1-e7cd-4f88-964d-4f8192b1594f
+		formatString: 0.0
+
+	partition Variantes = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(Ruta & "Variantes.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"variante", type text}, {"n", Int64.Type}, {"pct", type number}, {"pct_acum", type number}}, "en-US")
+				in
+				    Tipos
+

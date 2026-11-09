@@ -1,0 +1,107 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "e318350e2a51407fa9c1",
+  "position": {
+    "x": 24,
+    "y": 92,
+    "z": 1,
+    "height": 296,
+    "width": 610,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ShapEstancia"
+                    }
+                  },
+                  "Property": "variable"
+                }
+              },
+              "queryRef": "ShapEstancia.variable",
+              "nativeQueryRef": "variable"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "ShapEstancia"
+                        }
+                      },
+                      "Property": "importancia_shap"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(ShapEstancia.importancia_shap)",
+              "nativeQueryRef": "Sum of importancia_shap",
+              "displayName": "Importancia"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "ShapEstancia"
+                      }
+                    },
+                    "Property": "importancia_shap"
+                  }
+                },
+                "Function": 0
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Estancia prolongada: qué la explica (SHAP, AUC 0,80)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

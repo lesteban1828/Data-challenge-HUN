@@ -1,0 +1,106 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "90ebf1577533443f9ffa",
+  "position": {
+    "x": 596,
+    "y": 92,
+    "z": 2,
+    "height": 604,
+    "width": 660,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Recomendaciones"
+                    }
+                  },
+                  "Property": "prioridad"
+                }
+              },
+              "queryRef": "Recomendaciones.prioridad",
+              "nativeQueryRef": "prioridad",
+              "displayName": "#"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Recomendaciones"
+                    }
+                  },
+                  "Property": "recomendacion"
+                }
+              },
+              "queryRef": "Recomendaciones.recomendacion",
+              "nativeQueryRef": "recomendacion",
+              "displayName": "Recomendación"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Recomendaciones"
+                    }
+                  },
+                  "Property": "impacto"
+                }
+              },
+              "queryRef": "Recomendaciones.impacto",
+              "nativeQueryRef": "impacto",
+              "displayName": "Impacto esperado"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Recomendaciones'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

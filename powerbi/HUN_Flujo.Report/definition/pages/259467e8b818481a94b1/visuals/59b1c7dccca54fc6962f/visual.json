@@ -1,0 +1,97 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "59b1c7dccca54fc6962f",
+  "position": {
+    "x": 646,
+    "y": 92,
+    "z": 2,
+    "height": 290,
+    "width": 610,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "clusteredColumnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "OcupacionHora"
+                    }
+                  },
+                  "Property": "hora_txt"
+                }
+              },
+              "queryRef": "OcupacionHora.hora_txt",
+              "nativeQueryRef": "hora_txt",
+              "displayName": "Hora"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Episodios"
+                    }
+                  },
+                  "Property": "Pacientes en urgencias (promedio)"
+                }
+              },
+              "queryRef": "Episodios.Pacientes en urgencias (promedio)",
+              "nativeQueryRef": "Pacientes en urgencias (promedio)"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "OcupacionHora"
+                  }
+                },
+                "Property": "hora_txt"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Pacientes en urgencias por hora (promedio)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

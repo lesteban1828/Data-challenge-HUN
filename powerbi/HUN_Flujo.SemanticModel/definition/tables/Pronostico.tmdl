@@ -1,0 +1,54 @@
+table Pronostico
+	lineageTag: 7ea8b156-b801-4fb6-860c-78551b518b4f
+
+	column fecha
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: fecha
+		lineageTag: e0e6e842-263e-49c1-895a-7d3041a34f78
+		formatString: yyyy-mm-dd
+
+	column llegadas_real
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: llegadas_real
+		lineageTag: 5587fed0-45e7-447a-ac25-0230291e832b
+
+	column pred_holt_winters
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: pred_holt_winters
+		lineageTag: feeb2f6b-af72-4664-b238-535a19c95d95
+		formatString: 0.0
+
+	column pred_lightgbm
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: pred_lightgbm
+		lineageTag: 711ddeb5-52e5-4639-a754-9f310a8418ac
+		formatString: 0.0
+
+	column pico_ocupacion
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: pico_ocupacion
+		lineageTag: fc8828f5-12f8-47ca-a04c-43c94256574f
+		formatString: 0.0
+
+	column prob_saturacion
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: prob_saturacion
+		lineageTag: 1fb65339-ba41-46d5-9ab5-bc7d17de307a
+		formatString: 0.0
+
+	partition Pronostico = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(Ruta & "Pronostico.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"fecha", type date}, {"llegadas_real", Int64.Type}, {"pred_holt_winters", type number}, {"pred_lightgbm", type number}, {"pico_ocupacion", type number}, {"prob_saturacion", type number}}, "en-US")
+				in
+				    Tipos
+

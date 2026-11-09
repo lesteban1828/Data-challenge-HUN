@@ -1,0 +1,159 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "43410087068f4741b672",
+  "position": {
+    "x": 646,
+    "y": 92,
+    "z": 3,
+    "height": 300,
+    "width": 610,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "PerfilDx"
+                    }
+                  },
+                  "Property": "dx_principal_nombre"
+                }
+              },
+              "queryRef": "PerfilDx.dx_principal_nombre",
+              "nativeQueryRef": "dx_principal_nombre",
+              "displayName": "Diagnóstico"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "PerfilDx"
+                        }
+                      },
+                      "Property": "episodios"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(PerfilDx.episodios)",
+              "nativeQueryRef": "Sum of episodios",
+              "displayName": "Episodios"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "PerfilDx"
+                        }
+                      },
+                      "Property": "estancia_p50_h"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(PerfilDx.estancia_p50_h)",
+              "nativeQueryRef": "Sum of estancia_p50_h",
+              "displayName": "Estancia mediana (h)"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "PerfilDx"
+                        }
+                      },
+                      "Property": "pct_hospitalizado"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(PerfilDx.pct_hospitalizado)",
+              "nativeQueryRef": "Sum of pct_hospitalizado",
+              "displayName": "% hospitalizado"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "PerfilDx"
+                      }
+                    },
+                    "Property": "episodios"
+                  }
+                },
+                "Function": 0
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Diagnósticos más frecuentes'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

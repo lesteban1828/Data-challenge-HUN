@@ -1,0 +1,107 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "a71b081aebbf4feca224",
+  "position": {
+    "x": 24,
+    "y": 400,
+    "z": 2,
+    "height": 296,
+    "width": 610,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ShapHospitalizacion"
+                    }
+                  },
+                  "Property": "variable"
+                }
+              },
+              "queryRef": "ShapHospitalizacion.variable",
+              "nativeQueryRef": "variable"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "ShapHospitalizacion"
+                        }
+                      },
+                      "Property": "importancia_shap"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(ShapHospitalizacion.importancia_shap)",
+              "nativeQueryRef": "Sum of importancia_shap",
+              "displayName": "Importancia"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "ShapHospitalizacion"
+                      }
+                    },
+                    "Property": "importancia_shap"
+                  }
+                },
+                "Function": 0
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Hospitalización al ingreso (SHAP, AUC 0,77)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,33 @@
+table MetricasPronostico
+	lineageTag: 4ee2cceb-4fa4-45a1-9102-ca91f667d6e9
+
+	column modelo
+		dataType: string
+		summarizeBy: none
+		sourceColumn: modelo
+		lineageTag: 19f18bec-3739-4b54-90c9-e5a5417b9eb0
+
+	column mae
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: mae
+		lineageTag: 6bc871fa-79c0-4944-b61a-c728f27a8449
+		formatString: 0.0
+
+	column mape
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: mape
+		lineageTag: 031389c0-3b01-4026-8f39-63dfbce04cf3
+		formatString: 0.0
+
+	partition MetricasPronostico = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(Ruta & "MetricasPronostico.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"modelo", type text}, {"mae", type number}, {"mape", type number}}, "en-US")
+				in
+				    Tipos
+

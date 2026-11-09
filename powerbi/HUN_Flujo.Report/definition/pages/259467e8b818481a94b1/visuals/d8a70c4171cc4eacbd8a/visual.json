@@ -1,0 +1,104 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "d8a70c4171cc4eacbd8a",
+  "position": {
+    "x": 24,
+    "y": 394,
+    "z": 3,
+    "height": 302,
+    "width": 610,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "OcupacionDiaria"
+                    }
+                  },
+                  "Property": "fecha"
+                }
+              },
+              "queryRef": "OcupacionDiaria.fecha",
+              "nativeQueryRef": "fecha"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "OcupacionDiaria"
+                        }
+                      },
+                      "Property": "media_28d"
+                    }
+                  },
+                  "Function": 4
+                }
+              },
+              "queryRef": "Max(OcupacionDiaria.media_28d)",
+              "nativeQueryRef": "Max of media_28d",
+              "displayName": "Pico diario (media 28 días)"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "OcupacionDiaria"
+                        }
+                      },
+                      "Property": "umbral_p90"
+                    }
+                  },
+                  "Function": 4
+                }
+              },
+              "queryRef": "Max(OcupacionDiaria.umbral_p90)",
+              "nativeQueryRef": "Max of umbral_p90",
+              "displayName": "Umbral de saturación (P90)"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Pico diario de ocupación vs umbral P90'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,33 @@
+table Congestion
+	lineageTag: 78ff5ea5-1b68-4f3f-b5b4-b331e33c32bc
+
+	column decil
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: decil
+		lineageTag: b0847640-62b6-4bdc-b0ba-a74c83d7a095
+
+	column espera_cama_h
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: espera_cama_h
+		lineageTag: 6804222b-71ab-4773-8823-73e1ddb6dcf8
+		formatString: 0.0
+
+	column estancia_observacion_h
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: estancia_observacion_h
+		lineageTag: 55266348-c0fd-4b2a-afcd-9191dca4f1f0
+		formatString: 0.0
+
+	partition Congestion = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(Ruta & "Congestion.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"decil", Int64.Type}, {"espera_cama_h", type number}, {"estancia_observacion_h", type number}}, "en-US")
+				in
+				    Tipos
+

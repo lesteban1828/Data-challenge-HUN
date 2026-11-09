@@ -1,0 +1,52 @@
+table Transiciones
+	lineageTag: 8e78201c-cc66-40e7-9e47-63291ca16ffe
+
+	column etapa_anterior
+		dataType: string
+		summarizeBy: none
+		sourceColumn: etapa_anterior
+		lineageTag: f379318c-b9d3-43c9-97b2-efd4c1965b40
+
+	column etapa
+		dataType: string
+		summarizeBy: none
+		sourceColumn: etapa
+		lineageTag: 82fd26fb-29a4-4b26-86d1-7d7241b88c9f
+
+	column n
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: n
+		lineageTag: 955ce0ea-86ea-47b5-a95c-b66cd50beb80
+
+	column espera_p50_h
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: espera_p50_h
+		lineageTag: f8e1b17e-0c04-473a-962a-38177a950641
+		formatString: 0.0
+
+	column espera_p90_h
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: espera_p90_h
+		lineageTag: d255d25c-3987-49de-8302-db7a93a37576
+		formatString: 0.0
+
+	column pct
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: pct
+		lineageTag: 81d97cbc-d22d-4a62-93a7-e3686afc1f4c
+		formatString: 0.0
+
+	partition Transiciones = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(Ruta & "Transiciones.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"etapa_anterior", type text}, {"etapa", type text}, {"n", Int64.Type}, {"espera_p50_h", type number}, {"espera_p90_h", type number}, {"pct", type number}}, "en-US")
+				in
+				    Tipos
+

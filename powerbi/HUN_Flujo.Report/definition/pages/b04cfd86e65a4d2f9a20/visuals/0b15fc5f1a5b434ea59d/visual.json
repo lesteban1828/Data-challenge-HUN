@@ -1,0 +1,78 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "0b15fc5f1a5b434ea59d",
+  "position": {
+    "x": 840,
+    "y": 216,
+    "z": 11,
+    "height": 300,
+    "width": 416,
+    "tabOrder": 11
+  },
+  "visual": {
+    "visualType": "donutChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Episodios"
+                    }
+                  },
+                  "Property": "tipo_detalle"
+                }
+              },
+              "queryRef": "Episodios.tipo_detalle",
+              "nativeQueryRef": "tipo_detalle"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Episodios"
+                    }
+                  },
+                  "Property": "Episodios válidos"
+                }
+              },
+              "queryRef": "Episodios.Episodios válidos",
+              "nativeQueryRef": "Episodios válidos"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Tipo de episodio'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

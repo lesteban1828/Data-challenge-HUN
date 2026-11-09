@@ -1,0 +1,40 @@
+table OcupacionDiaria
+	lineageTag: 93c0f2c3-e6b1-4c00-bae9-535d6ab38aa7
+
+	column fecha
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: fecha
+		lineageTag: ed846552-c7e2-41b6-95ef-4cd4832c18f7
+		formatString: yyyy-mm-dd
+
+	column pico
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: pico
+		lineageTag: cd63d7a9-7257-4dbd-b85e-97983bf698e4
+		formatString: 0.0
+
+	column media_28d
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: media_28d
+		lineageTag: 066817fa-9298-44fd-b8e6-fe953dbe5bfb
+		formatString: 0.0
+
+	column umbral_p90
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: umbral_p90
+		lineageTag: 0e644836-0b86-4b3c-82d5-ba773a346d83
+
+	partition OcupacionDiaria = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(Ruta & "OcupacionDiaria.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"fecha", type date}, {"pico", type number}, {"media_28d", type number}, {"umbral_p90", Int64.Type}}, "en-US")
+				in
+				    Tipos
+

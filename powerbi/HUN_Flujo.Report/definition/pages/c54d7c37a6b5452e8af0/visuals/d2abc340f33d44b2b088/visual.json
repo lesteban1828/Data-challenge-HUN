@@ -1,0 +1,139 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "d2abc340f33d44b2b088",
+  "position": {
+    "x": 866,
+    "y": 92,
+    "z": 2,
+    "height": 330,
+    "width": 390,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MetricasPronostico"
+                    }
+                  },
+                  "Property": "modelo"
+                }
+              },
+              "queryRef": "MetricasPronostico.modelo",
+              "nativeQueryRef": "modelo",
+              "displayName": "Modelo"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "MetricasPronostico"
+                        }
+                      },
+                      "Property": "mae"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(MetricasPronostico.mae)",
+              "nativeQueryRef": "Sum of mae",
+              "displayName": "Error medio"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "MetricasPronostico"
+                        }
+                      },
+                      "Property": "mape"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(MetricasPronostico.mape)",
+              "nativeQueryRef": "Sum of mape",
+              "displayName": "MAPE %"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "MetricasPronostico"
+                      }
+                    },
+                    "Property": "mape"
+                  }
+                },
+                "Function": 0
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Error por modelo'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

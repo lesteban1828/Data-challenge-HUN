@@ -1,0 +1,31 @@
+table Recomendaciones
+	lineageTag: bc94d627-db8e-4bd1-a752-e777169bc4b7
+
+	column prioridad
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: prioridad
+		lineageTag: e886093e-3102-41f6-9278-f8b7ef3132a0
+
+	column recomendacion
+		dataType: string
+		summarizeBy: none
+		sourceColumn: recomendacion
+		lineageTag: a1934405-abc0-482a-b8c0-47fbefa9731d
+
+	column impacto
+		dataType: string
+		summarizeBy: none
+		sourceColumn: impacto
+		lineageTag: 0287877a-2cba-4089-930d-b68ecb85a2f5
+
+	partition Recomendaciones = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(Ruta & "Recomendaciones.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"prioridad", Int64.Type}, {"recomendacion", type text}, {"impacto", type text}}, "en-US")
+				in
+				    Tipos
+

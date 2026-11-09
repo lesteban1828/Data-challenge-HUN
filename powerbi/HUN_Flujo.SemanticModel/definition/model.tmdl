@@ -1,0 +1,25 @@
+model Model
+	culture: es-CO
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-CO
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+ref expression Ruta
+
+ref table Episodios
+ref table Fecha
+ref table OcupacionDiaria
+ref table OcupacionHora
+ref table Congestion
+ref table Pronostico
+ref table MetricasPronostico
+ref table Escenarios
+ref table SHAP
+ref table ShapEstancia
+ref table ShapHospitalizacion
+ref table PerfilDx
+ref table Transiciones
+ref table Variantes
+ref table Recomendaciones

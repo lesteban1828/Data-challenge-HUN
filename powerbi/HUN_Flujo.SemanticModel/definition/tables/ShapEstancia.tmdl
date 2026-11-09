@@ -1,0 +1,26 @@
+table ShapEstancia
+	lineageTag: f1915bc4-cef0-4315-a101-f627e1a33fc3
+
+	column variable
+		dataType: string
+		summarizeBy: none
+		sourceColumn: variable
+		lineageTag: a9f1c660-844f-4c7b-8865-1fe44155ef01
+
+	column importancia_shap
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: importancia_shap
+		lineageTag: 8033f108-f4fb-4004-a909-ee6a70b3422f
+		formatString: 0.0
+
+	partition ShapEstancia = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(Ruta & "ShapEstancia.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"variable", type text}, {"importancia_shap", type number}}, "en-US")
+				in
+				    Tipos
+

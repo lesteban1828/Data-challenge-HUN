@@ -1,0 +1,346 @@
+<title>Flujo HUN</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="data.js"></script>
+<style>
+:root{
+  --bg1:#3a2a1e; --bg2:#7a5a3c; --bg3:#c9a77c; --bg4:#2c3a3a;
+  --glass:rgba(255,255,255,.10); --glass-2:rgba(255,255,255,.16); --stroke:rgba(255,255,255,.22);
+  --ink:#fff; --ink-2:rgba(255,255,255,.72); --ink-3:rgba(255,255,255,.5);
+  --accent:#7cc4ff; --good:#5fe0a8; --bad:#ff7a7a; --warn:#ffc46b; --muted:rgba(255,255,255,.45);
+  --grid:rgba(255,255,255,.10);
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:Inter,system-ui,sans-serif;color:var(--ink);background:#20170f;overflow-x:hidden}
+:root{--page:#20170f}
+.scene{position:fixed;inset:0;z-index:-1;overflow:hidden;
+  background:radial-gradient(1200px 700px at 15% 20%,var(--bg3) 0%,transparent 60%),
+             radial-gradient(900px 600px at 85% 30%,#9d7b55 0%,transparent 60%),
+             radial-gradient(1000px 800px at 60% 100%,var(--bg4) 0%,transparent 65%),
+             linear-gradient(160deg,var(--bg2),var(--bg1));}
+.scene::before,.scene::after{content:"";position:absolute;border-radius:50%;filter:blur(70px);opacity:.55}
+.scene::before{width:520px;height:520px;left:8%;top:45%;background:#e8c89a}
+.scene::after{width:420px;height:420px;right:6%;top:8%;background:#6f8f88}
+/* layout */
+.app{display:grid;grid-template-columns:72px 1fr;grid-template-rows:auto 1fr auto;gap:16px;min-height:100%;padding-block:16px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.top{grid-column:1/3;display:flex;align-items:center;gap:16px;padding:10px 14px;border-radius:999px}
+.glass{background:var(--glass);border:1px solid var(--stroke);backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%);box-shadow:0 10px 40px rgba(0,0,0,.18)}
+.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#fff8,#fff2);display:grid;place-items:center;font-weight:700;font-size:13px}
+.hello{font-weight:600;font-size:14px}.hello small{display:block;color:var(--ink-3);font-weight:400;font-size:11px}
+.search{flex:1;max-width:520px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.08);color:var(--ink-2);font-size:13px;border:1px solid rgba(255,255,255,.12)}
+.search .dot{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#b9a4ff,#6b5bd6)}
+.pill{font-size:12px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.12);color:var(--ink-2);white-space:nowrap}
+.side{grid-row:2/3;border-radius:28px;padding:14px 0;display:flex;flex-direction:column;align-items:center;gap:10px;align-self:start;position:sticky;top:16px}
+.side button{width:42px;height:42px;border-radius:14px;border:0;background:transparent;color:var(--ink-2);cursor:pointer;display:grid;place-items:center;position:relative}
+.side button:hover,.side button.on{background:rgba(255,255,255,.18);color:#fff}
+.side button .tip{position:absolute;left:52px;white-space:nowrap;font-size:12px;padding:5px 10px;border-radius:8px;background:rgba(20,15,10,.75);opacity:0;pointer-events:none;transition:.15s}
+.side button:hover .tip{opacity:1}
+.side svg{width:20px;height:20px}
+.main{grid-row:2/3;border-radius:28px;padding:28px;min-width:0}
+.nav{grid-column:2/3;justify-self:center;display:flex;gap:4px;padding:6px;border-radius:999px;position:sticky;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:5}
+.nav button{border:0;background:transparent;color:var(--ink-2);font:500 13px Inter;padding:9px 16px;border-radius:999px;cursor:pointer}
+.nav button.on{background:rgba(255,255,255,.9);color:#2a2018}
+.nav button:not(.on):hover{background:rgba(255,255,255,.14);color:#fff}
+/* content */
+h1{font-size:26px;font-weight:700;letter-spacing:-.02em}
+.lead{color:var(--ink-2);margin:6px 0 22px;font-size:14px;max-width:780px;line-height:1.5}
+.lead b{color:#fff}
+.grid{display:grid;gap:16px}
+.k6{grid-template-columns:repeat(6,minmax(0,1fr))}
+.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.c3{grid-template-columns:2fr 1fr}
+.card{border-radius:22px;padding:18px;background:var(--glass);border:1px solid var(--stroke);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);transition:transform .2s, background .2s;min-width:0}
+.card:hover{transform:translateY(-4px);background:var(--glass-2)}
+.kpi .lbl{font-size:12px;color:var(--ink-2)}
+.kpi .val{font-size:26px;font-weight:700;margin-top:6px;letter-spacing:-.02em}
+.kpi .sub{font-size:12px;margin-top:6px;color:var(--ink-3)}
+.kpi.hl{background:linear-gradient(135deg,rgba(124,196,255,.35),rgba(124,196,255,.10));border-color:rgba(124,196,255,.55)}
+.kpi.hl .sub{color:#d9eeff}
+.card h3{font-size:14px;font-weight:600;margin-bottom:4px}
+.card .hint{font-size:12px;color:var(--ink-3);margin-bottom:12px}
+.chart{position:relative;height:260px}
+.chart.tall{height:320px}
+.insight{border-radius:22px;padding:18px 20px;background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.06));border:1px solid var(--stroke);font-size:14px;line-height:1.55}
+.insight b{color:#fff}.insight .tag{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:6px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-weight:500;color:var(--ink-3);padding:8px 6px;border-bottom:1px solid var(--grid)}
+td{padding:9px 6px;border-bottom:1px solid var(--grid)}
+td.n{text-align:right;font-variant-numeric:tabular-nums}th.n{text-align:right}
+.bar{height:6px;border-radius:6px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;background:var(--accent);border-radius:6px}
+.heat{display:grid;grid-template-columns:34px repeat(24,1fr);gap:2px;font-size:10px;color:var(--ink-3)}
+.heat div{aspect-ratio:1/1;border-radius:4px}.heat .lab{aspect-ratio:auto;display:flex;align-items:center}
+.heat .hh{aspect-ratio:auto;text-align:center}
+.seg{display:inline-flex;padding:3px;border-radius:999px;background:rgba(255,255,255,.10);margin-bottom:12px}
+.seg button{border:0;background:transparent;color:var(--ink-2);font:500 12px Inter;padding:6px 12px;border-radius:999px;cursor:pointer}
+.seg button.on{background:rgba(255,255,255,.85);color:#2a2018}
+.page{display:none;animation:fade .35s ease}.page.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.foot{margin-top:22px;font-size:11px;color:var(--ink-3)}
+.rec{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--grid);font-size:13px;line-height:1.45}
+.rec .num{flex:0 0 28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.18);font-weight:600}
+.rec small{color:var(--ink-3);display:block}
+@media (max-width:1100px){.k6{grid-template-columns:repeat(3,1fr)}.c2,.c3{grid-template-columns:1fr}}
+@media (max-width:700px){
+  .app{grid-template-columns:1fr;padding-block:12px;gap:12px}.side{display:none}.top{grid-column:1}.main{grid-column:1;padding:18px}
+  .nav{grid-column:1;overflow-x:auto;max-width:100%;justify-self:stretch}.k6{grid-template-columns:repeat(2,1fr)}.search{display:none}
+}
+</style>
+<div class="scene"></div>
+<div class="app">
+  <header class="top glass">
+    <div class="avatar">HUN</div>
+    <div class="hello">Bienvenido, equipo HUN<small>Data Challenge 2026 · Flujo de pacientes</small></div>
+    <div class="search"><span class="dot"></span><span id="ask">¿Dónde se pierde el tiempo del paciente?</span></div>
+    <span class="pill" id="periodo"></span>
+  </header>
+
+  <nav class="side glass" id="side"></nav>
+
+  <main class="main glass">
+    <!-- RESUMEN -->
+    <section class="page on" id="p-resumen">
+      <h1>Resumen ejecutivo</h1>
+      <p class="lead">El cuello de botella está en la <b>salida</b> de urgencias: quien necesita hospitalización espera una <b>mediana de <span data-k="cama_p50"></span> h</b> por una cama.</p>
+      <div class="grid k6" id="kpis"></div>
+      <div class="grid c3" style="margin-top:16px">
+        <div class="card"><h3>Demanda mensual y espera de cama</h3><div class="hint">Episodios por mes (barras) y mediana de espera de cama en horas (línea)</div><div class="chart tall"><canvas id="ch-mensual"></canvas></div></div>
+        <div class="grid">
+          <div class="insight"><span class="tag">Hallazgo principal</span>La hospitalización opera casi al <b>100 % de su capacidad efectiva</b>. Por eso, dar el alta <b>4 h antes</b> baja la espera de cama simulada de <b>13,9 a 3,0 h</b>.</div>
+          <div class="card"><h3>Tipo de episodio</h3><div class="hint">Episodios sin estancias atípicas</div><div class="chart" style="height:200px"><canvas id="ch-tipos"></canvas></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FLUJO -->
+    <section class="page" id="p-flujo">
+      <h1>Flujo y cuellos de botella</h1>
+      <p class="lead">El triage dura unos 3 minutos. El tiempo se acumula en observación y, sobre todo, <b>esperando cama</b>.</p>
+      <div class="grid c2">
+        <div class="card"><h3>Estancia por tipo de episodio</h3><div class="hint">Mediana y P90 en horas</div><table id="t-tipos"></table></div>
+        <div class="card"><h3>Distribución de la espera de cama</h3><div class="hint">Horas desde la llegada a urgencias hasta la hospitalización (corte en 96 h)</div><div class="chart"><canvas id="ch-dist"></canvas></div></div>
+        <div class="card"><h3>Trayectorias más frecuentes</h3><div class="hint">"×n" = varios traslados entre áreas de urgencias</div><table id="t-var"></table></div>
+        <div class="card"><h3>Transiciones entre etapas</h3><div class="hint">Número de pasos observados</div><table id="t-trans"></table></div>
+      </div>
+    </section>
+
+    <!-- CONGESTION -->
+    <section class="page" id="p-congestion">
+      <h1>Congestión</h1>
+      <p class="lead">Las llegadas tienen su pico lunes y martes a las 10–11 h. La ocupación llega a su máximo <b>unas 5 h después</b>, y con urgencias lleno la espera de cama sube un <b><span id="pct-cong"></span> %</b>.</p>
+      <div class="grid c2">
+        <div class="card"><h3>Llegadas promedio por hora</h3><div class="hint">Día de la semana × hora</div><div class="heat" id="h-lleg"></div></div>
+        <div class="card"><h3>Pacientes presentes en urgencias</h3><div class="hint">Promedio por día de la semana × hora</div><div class="heat" id="h-ocup"></div></div>
+        <div class="card"><h3>Pico diario de ocupación</h3><div class="hint">La línea punteada es el umbral de saturación (P90 = <span id="umbral"></span> pacientes)</div><div class="chart"><canvas id="ch-ocup"></canvas></div></div>
+        <div class="card"><h3>La congestión alarga la espera de cama</h3><div class="hint">Mediana de horas según la ocupación de urgencias al llegar (decil 1 = menos lleno)</div><div class="chart"><canvas id="ch-cong"></canvas></div></div>
+      </div>
+    </section>
+
+    <!-- FACTORES -->
+    <section class="page" id="p-factores">
+      <h1>Factores de demora</h1>
+      <p class="lead">La estancia prolongada se explica por lo que pasa <b>dentro</b> de urgencias (traslados, laboratorios) más que por el perfil del paciente: AUC 0,80 con todo el episodio frente a 0,60 solo con el ingreso.</p>
+      <div class="grid c2">
+        <div class="card"><h3>Importancia de variables (SHAP)</h3>
+          <div class="seg" id="seg-shap"></div><div class="hint" id="shap-hint"></div><div class="chart tall"><canvas id="ch-shap"></canvas></div></div>
+        <div class="card"><h3>Diagnósticos más frecuentes</h3><div class="hint">Estancia mediana y % hospitalizado (solo episodios con diagnóstico codificado)</div><table id="t-dx"></table></div>
+        <div class="card"><h3>Hospitalización por edad</h3><div class="hint">% de episodios que terminan hospitalizados</div><div class="chart"><canvas id="ch-edad"></canvas></div></div>
+        <div class="card"><h3>Modelos</h3><div class="hint">Validación temporal: entrenados hasta jul-2025, evaluados después</div>
+          <table><tr><th>Modelo</th><th>Información</th><th class="n">AUC</th></tr>
+          <tr><td>Hospitalización</td><td>Primeras 2 h</td><td class="n">0,77</td></tr>
+          <tr><td>Estancia prolongada</td><td>Todo el episodio</td><td class="n">0,80</td></tr>
+          <tr><td>Estancia prolongada</td><td>Primeras 2 h</td><td class="n">0,60</td></tr></table></div>
+      </div>
+    </section>
+
+    <!-- PRONOSTICO -->
+    <section class="page" id="p-pronostico">
+      <h1>Pronóstico y alerta</h1>
+      <p class="lead">Las llegadas del día siguiente se pronostican con un <b>error de <span id="mape"></span> %</b> (Holt-Winters). La alerta de saturación alcanzó un AUC de 0,92 en la prueba.</p>
+      <div class="grid c3">
+        <div class="card"><h3>Llegadas diarias: real vs pronóstico</h3><div class="hint">Últimos 120 días (enero a abril de 2026)</div><div class="chart tall"><canvas id="ch-pron"></canvas></div></div>
+        <div class="card"><h3>Error por modelo</h3><div class="hint">Pronóstico a 1 día</div><table id="t-met"></table></div>
+      </div>
+      <div class="card" style="margin-top:16px"><h3>Probabilidad de saturación</h3><div class="hint">Riesgo estimado para cada día de la prueba (umbral de alerta: 50 %)</div><div class="chart" style="height:200px"><canvas id="ch-prob"></canvas></div></div>
+    </section>
+
+    <!-- ESCENARIOS -->
+    <section class="page" id="p-escenarios">
+      <h1>Escenarios what-if</h1>
+      <p class="lead">Simulación de la cola de camas calibrada con el último año (≈273 camas efectivas). Sirve para <b>comparar medidas</b>, no para predecir cifras exactas.</p>
+      <div class="grid c3">
+        <div class="card"><h3>Espera media simulada por cama</h3><div class="hint">Horas además del tiempo clínico · verde mejora, rojo empeora (la barra roja está recortada)</div><div class="chart tall"><canvas id="ch-esc"></canvas></div></div>
+        <div class="card"><h3>Recomendaciones</h3><div id="recs"></div></div>
+      </div>
+    </section>
+    <p class="foot">Fuente: base OMOP del reto (esquema uninorte_omop) · episodios reconstruidos desde visit_detail · solo datos agregados, sin información de pacientes.</p>
+  </main>
+
+  <div class="nav glass" id="nav"></div>
+</div>
+
+<script>
+const D = window.HUN, K = D.kpi;
+const fmt = (v, d = 1) => v == null ? '—' : Number(v).toLocaleString('es-CO', {minimumFractionDigits: d, maximumFractionDigits: d});
+const int = v => Number(v).toLocaleString('es-CO');
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const DIAS = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+
+Chart.defaults.color = 'rgba(255,255,255,.7)';
+Chart.defaults.font.family = 'Inter';
+Chart.defaults.borderColor = 'rgba(255,255,255,.10)';
+Chart.defaults.plugins.legend.labels.boxWidth = 10;
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(25,18,12,.85)';
+Chart.defaults.maintainAspectRatio = false;
+
+/* navegación */
+const PAGES = [
+  ['resumen','Resumen','<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>'],
+  ['flujo','Flujo','<path d="M4 6h10M4 12h16M4 18h7"/><circle cx="18" cy="6" r="2"/><circle cx="15" cy="18" r="2"/>'],
+  ['congestion','Congestión','<path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="5"/>'],
+  ['factores','Factores','<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'],
+  ['pronostico','Pronóstico','<path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/>'],
+  ['escenarios','Escenarios','<path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/>'],
+];
+const side = document.getElementById('side'), nav = document.getElementById('nav');
+PAGES.forEach(([id, label, icon]) => {
+  side.insertAdjacentHTML('beforeend', `<button data-p="${id}" aria-label="${label}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icon}</svg><span class="tip">${label}</span></button>`);
+  nav.insertAdjacentHTML('beforeend', `<button data-p="${id}">${label}</button>`);
+});
+const drawn = {};
+function go(id){
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('on', p.id === 'p-' + id));
+  document.querySelectorAll('[data-p]').forEach(b => b.classList.toggle('on', b.dataset.p === id));
+  if (!drawn[id]) { drawn[id] = true; RENDER[id](); }
+  try { localStorage.setItem('hun-page', id); } catch (e) {}
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+document.querySelectorAll('[data-p]').forEach(b => b.onclick = () => go(b.dataset.p));
+
+document.getElementById('periodo').textContent = `${K.desde} → ${K.hasta}`;
+document.querySelectorAll('[data-k]').forEach(e => e.textContent = fmt(K[e.dataset.k]));
+
+/* páginas */
+const RENDER = {
+  resumen(){
+    const cards = [
+      ['Episodios por día', fmt(K.episodios_dia, 0), `${int(K.episodios)} episodios · ${int(K.pacientes)} pacientes`],
+      ['Espera de cama (mediana)', fmt(K.cama_p50) + ' h', `P90: ${fmt(K.cama_p90)} h`, true],
+      ['Observación (mediana)', fmt(K.obs_p50) + ' h', `P90: ${fmt(K.obs_p90)} h`],
+      ['% hospitalizados', fmt(K.pct_hosp) + ' %', 'de los episodios de urgencias'],
+      ['Atenciones breves', fmt(K.pct_breve, 0) + ' %', 'duran menos de 15 min'],
+      ['Reconsulta en 72 h', fmt(K.reconsulta_72h) + ' %', 'vuelven a urgencias'],
+    ];
+    document.getElementById('kpis').innerHTML = cards.map(([l, v, s, hl]) =>
+      `<div class="card kpi${hl ? ' hl' : ''}"><div class="lbl">${l}</div><div class="val">${v}</div><div class="sub">${s}</div></div>`).join('');
+    new Chart('ch-mensual', {data: {labels: D.mensual.map(m => m.mes), datasets: [
+      {type: 'line', label: 'Espera de cama (h)', data: D.mensual.map(m => m.cama_p50), borderColor: css('--accent'), backgroundColor: css('--accent'), yAxisID: 'y1', tension: .35, pointRadius: 0, borderWidth: 2.5},
+      {type: 'bar', label: 'Episodios', data: D.mensual.map(m => m.episodios), backgroundColor: 'rgba(255,255,255,.22)', borderRadius: 4, yAxisID: 'y'}]},
+      options: {interaction: {mode: 'index', intersect: false}, scales: {
+        x: {grid: {display: false}, ticks: {maxTicksLimit: 9}},
+        y: {beginAtZero: true, title: {display: true, text: 'Episodios'}},
+        y1: {position: 'right', beginAtZero: true, grid: {display: false}, title: {display: true, text: 'Horas'}}}}});
+    const order = ['Urgencias breve (<15 min)', 'Urgencias con observación', 'Urgencias → Hospitalización', 'Hospitalización directa'];
+    const T = order.map(o => D.tipos.find(t => t.tipo === o)).filter(Boolean);
+    new Chart('ch-tipos', {type: 'doughnut', data: {labels: T.map(t => t.tipo), datasets: [{data: T.map(t => t.n),
+      backgroundColor: ['rgba(255,255,255,.30)', 'rgba(255,255,255,.55)', css('--accent'), 'rgba(124,196,255,.45)'], borderWidth: 0}]},
+      options: {cutout: '68%', plugins: {legend: {position: 'right', labels: {font: {size: 11}}}}}});
+  },
+  flujo(){
+    const order = ['Urgencias breve (<15 min)', 'Urgencias con observación', 'Urgencias → Hospitalización', 'Hospitalización directa'];
+    document.getElementById('t-tipos').innerHTML = '<tr><th>Tipo</th><th class="n">Episodios</th><th class="n">Mediana</th><th class="n">P90</th></tr>' +
+      order.map(o => D.tipos.find(t => t.tipo === o)).filter(Boolean).map(t =>
+        `<tr><td>${t.tipo}</td><td class="n">${int(t.n)}</td><td class="n">${fmt(t.p50)} h</td><td class="n">${fmt(t.p90)} h</td></tr>`).join('');
+    new Chart('ch-dist', {type: 'bar', data: {labels: D.dist_cama.map((_, i) => `${i * 4}`), datasets: [{label: 'Episodios', data: D.dist_cama,
+      backgroundColor: D.dist_cama.map((_, i) => i * 4 < K.cama_p50 && K.cama_p50 <= i * 4 + 4 ? css('--accent') : 'rgba(255,255,255,.35)'), borderRadius: 3}]},
+      options: {plugins: {legend: {display: false}}, scales: {x: {grid: {display: false}, title: {display: true, text: 'Horas hasta la cama'}}, y: {beginAtZero: true}}}});
+    const vmax = Math.max(...D.variantes.map(v => v.n));
+    document.getElementById('t-var').innerHTML = D.variantes.map(v =>
+      `<tr><td>${v.v}<div class="bar"><i style="width:${v.n / vmax * 100}%"></i></div></td><td class="n">${fmt(v.pct)} %</td></tr>`).join('');
+    document.getElementById('t-trans').innerHTML = '<tr><th>De</th><th>A</th><th class="n">Pasos</th></tr>' +
+      D.trans.slice(0, 9).map(t => `<tr><td>${t.de}</td><td>${t.a}</td><td class="n">${int(t.n)}</td></tr>`).join('');
+  },
+  congestion(){
+    const c = D.congestion.cama; document.getElementById('pct-cong').textContent = Math.round((c[8] / c[0] - 1) * 100);
+    document.getElementById('umbral').textContent = D.umbral;
+    const heat = (el, M, rgb) => {
+      const flat = M.flat().filter(v => v != null), lo = Math.min(...flat), hi = Math.max(...flat);
+      let h = '<div></div>' + Array.from({length: 24}, (_, i) => `<div class="hh">${i % 3 ? '' : i}</div>`).join('');
+      M.forEach((row, d) => { h += `<div class="lab">${DIAS[d]}</div>` + row.map((v, hh) =>
+        `<div title="${DIAS[d]} ${hh}:00 · ${fmt(v, 0)}" style="background:rgba(${rgb},${(.08 + .92 * (v - lo) / (hi - lo)).toFixed(2)})"></div>`).join(''); });
+      document.getElementById(el).innerHTML = h;
+    };
+    heat('h-lleg', D.heat.llegadas, '255,214,150'); heat('h-ocup', D.heat.ocupacion, '124,196,255');
+    const od = D.ocup_diaria, ma = od.map((_, i) => i < 27 ? null : od.slice(i - 27, i + 1).reduce((s, x) => s + x.v, 0) / 28);
+    new Chart('ch-ocup', {type: 'line', data: {labels: od.map(o => o.f), datasets: [
+      {label: 'Pico diario', data: od.map(o => o.v), borderColor: 'rgba(255,255,255,.30)', borderWidth: 1, pointRadius: 0},
+      {label: 'Media 28 días', data: ma, borderColor: css('--accent'), borderWidth: 2.5, pointRadius: 0, tension: .3},
+      {label: 'Umbral P90', data: od.map(() => D.umbral), borderColor: css('--bad'), borderDash: [5, 5], borderWidth: 1.5, pointRadius: 0}]},
+      options: {interaction: {mode: 'index', intersect: false}, scales: {x: {grid: {display: false}, ticks: {maxTicksLimit: 8}}}}});
+    new Chart('ch-cong', {type: 'line', data: {labels: c.map((_, i) => i + 1), datasets: [
+      {label: 'Espera de cama', data: c, borderColor: css('--accent'), backgroundColor: css('--accent'), borderWidth: 2.5, tension: .3},
+      {label: 'Estancia en observación', data: D.congestion.obs, borderColor: 'rgba(255,255,255,.45)', backgroundColor: 'rgba(255,255,255,.45)', borderWidth: 2, tension: .3}]},
+      options: {scales: {y: {beginAtZero: true, title: {display: true, text: 'Horas'}}, x: {title: {display: true, text: 'Decil de ocupación al llegar'}, grid: {display: false}}}}});
+  },
+  factores(){
+    const NAMES = {n_areas_urg: 'Áreas de urgencias recorridas', n_labs: 'N.º de laboratorios', n_proc: 'N.º de procedimientos', n_dx_2h: 'Diagnósticos en 2 h',
+      hora_llegada: 'Hora de llegada', primera_etapa_nombre: 'Área de entrada', mes: 'Mes', dx_principal_nombre: 'Diagnóstico principal',
+      h_desde_episodio_previo: 'Tiempo desde el último episodio', edad: 'Edad', n_tipos_lab: 'Tipos de laboratorio', llegadas_ult_6h: 'Llegadas últimas 6 h',
+      ocupacion_urg_llegada: 'Ocupación al llegar', n_labs_2h: 'Laboratorios en 2 h', n_dx: 'N.º de diagnósticos', n_consultas_amb_30d: 'Consultas ambulatorias 30 d',
+      sexo: 'Sexo', dia_semana: 'Día de la semana', episodios_previos: 'Episodios previos', festivo: 'Festivo', fin_de_semana: 'Fin de semana', reconsulta_previa_30d: 'Reconsulta previa 30 d'};
+    const MODS = [['prolongada_explicativo', 'Estancia prolongada · explicativo', 'Todo el episodio · AUC 0,80'],
+                  ['hospitalizacion_ingreso', 'Hospitalización · ingreso', 'Primeras 2 h · AUC 0,77'],
+                  ['prolongada_ingreso', 'Estancia prolongada · ingreso', 'Primeras 2 h · AUC 0,60']];
+    const seg = document.getElementById('seg-shap'); let chart;
+    const show = id => {
+      const m = MODS.find(x => x[0] === id), rows = (D.shap[id] || []).slice(0, 8);
+      seg.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.m === id));
+      document.getElementById('shap-hint').textContent = m[2] + ' · media de |SHAP|';
+      const cfg = {labels: rows.map(r => NAMES[r.var] || r.var), datasets: [{data: rows.map(r => r.imp),
+        backgroundColor: rows.map((_, i) => i === 0 ? css('--accent') : 'rgba(255,255,255,.35)'), borderRadius: 4}]};
+      if (chart) { chart.data = cfg; chart.update(); }
+      else chart = new Chart('ch-shap', {type: 'bar', data: cfg, options: {indexAxis: 'y', plugins: {legend: {display: false}}, scales: {x: {beginAtZero: true}, y: {grid: {display: false}}}}});
+    };
+    seg.innerHTML = MODS.map(m => `<button data-m="${m[0]}">${m[1].split(' · ')[0]}${m[0].endsWith('ingreso') && m[0].startsWith('prol') ? ' (ingreso)' : ''}</button>`).join('');
+    seg.querySelectorAll('button').forEach(b => b.onclick = () => show(b.dataset.m)); show(MODS[0][0]);
+    document.getElementById('t-dx').innerHTML = '<tr><th>Diagnóstico</th><th class="n">Episodios</th><th class="n">Estancia</th><th class="n">% hosp.</th></tr>' +
+      D.perfil_dx.slice(0, 10).map(d => `<tr><td>${d.dx}</td><td class="n">${int(d.n)}</td><td class="n">${fmt(d.p50)} h</td><td class="n">${fmt(d.hosp)} %</td></tr>`).join('');
+    new Chart('ch-edad', {type: 'bar', data: {labels: D.edad.map(e => e.g), datasets: [{label: '% hospitalizado', data: D.edad.map(e => e.hosp),
+      backgroundColor: D.edad.map(e => e.hosp === Math.max(...D.edad.map(x => x.hosp)) ? css('--accent') : 'rgba(255,255,255,.35)'), borderRadius: 4}]},
+      options: {plugins: {legend: {display: false}}, scales: {y: {beginAtZero: true, ticks: {callback: v => v + ' %'}}, x: {grid: {display: false}, title: {display: true, text: 'Edad'}}}}});
+  },
+  pronostico(){
+    const hw = D.metricas.find(m => m.modelo === 'Holt-Winters'); document.getElementById('mape').textContent = fmt(hw && hw.mape);
+    const P = D.pron;
+    new Chart('ch-pron', {type: 'line', data: {labels: P.map(p => p.f), datasets: [
+      {label: 'Real', data: P.map(p => p.real), borderColor: 'rgba(255,255,255,.85)', borderWidth: 1.5, pointRadius: 0},
+      {label: 'Holt-Winters', data: P.map(p => p.hw), borderColor: css('--accent'), borderWidth: 2.5, pointRadius: 0, tension: .25},
+      {label: 'LightGBM', data: P.map(p => p.gbm), borderColor: css('--warn'), borderWidth: 1.5, pointRadius: 0, borderDash: [4, 3], tension: .25}]},
+      options: {interaction: {mode: 'index', intersect: false}, scales: {x: {grid: {display: false}, ticks: {maxTicksLimit: 8}}, y: {title: {display: true, text: 'Llegadas por día'}}}}});
+    document.getElementById('t-met').innerHTML = '<tr><th>Modelo</th><th class="n">Error medio</th><th class="n">MAPE</th></tr>' +
+      D.metricas.map(m => `<tr><td>${m.modelo}</td><td class="n">${fmt(m.mae, 0)}</td><td class="n">${fmt(m.mape)} %</td></tr>`).join('');
+    new Chart('ch-prob', {type: 'bar', data: {labels: P.map(p => p.f), datasets: [{label: 'Probabilidad de saturación', data: P.map(p => p.prob * 100),
+      backgroundColor: P.map(p => p.prob >= .5 ? css('--bad') : p.prob >= .3 ? css('--warn') : 'rgba(255,255,255,.30)'), borderRadius: 2}]},
+      options: {plugins: {legend: {display: false}}, scales: {x: {grid: {display: false}, ticks: {maxTicksLimit: 8}}, y: {max: 100, beginAtZero: true, ticks: {callback: v => v + ' %'}}}}});
+  },
+  escenarios(){
+    const E = [...D.escenarios].sort((a, b) => b.media - a.media), base = E.find(e => e.e === 'Base').media, CAP = 16;
+    new Chart('ch-esc', {type: 'bar', data: {labels: E.map(e => e.e === 'Base' ? 'Situación actual' : e.e), datasets: [{label: 'Espera media (h)',
+      data: E.map(e => Math.min(e.media, CAP)),
+      backgroundColor: E.map(e => e.e === 'Base' ? 'rgba(255,255,255,.55)' : e.media > base ? css('--bad') : css('--good')), borderRadius: 4}]},
+      options: {indexAxis: 'y', plugins: {legend: {display: false}, tooltip: {callbacks: {label: c => `${fmt(E[c.dataIndex].media)} h · ${fmt(E[c.dataIndex].pct12)} % espera más de 12 h`}}},
+        scales: {x: {beginAtZero: true, max: CAP, ticks: {callback: v => v + ' h'}}, y: {grid: {display: false}}}}});
+    const R = [['Gestión de egresos', 'Alta antes del mediodía y sala de egreso: espera de 13,9 a 3,0 h'],
+               ['Estancia hospitalaria −5 a 10 %', 'Rutas clínicas y revisión diaria de estancias largas'],
+               ['Alerta temprana de hospitalización', 'Modelo al ingreso (AUC 0,77) para preparar la cama antes'],
+               ['Menos traslados entre áreas', 'El factor más fuerte de la estancia prolongada'],
+               ['Tablero diario de saturación', 'Pronóstico a 1 día y protocolo por encima de ~260 pacientes']];
+    document.getElementById('recs').innerHTML = R.map((r, i) => `<div class="rec"><span class="num">${i + 1}</span><div>${r[0]}<small>${r[1]}</small></div></div>`).join('');
+  },
+};
+let start = 'resumen'; try { start = localStorage.getItem('hun-page') || 'resumen'; } catch (e) {}
+go(PAGES.some(p => p[0] === start) ? start : 'resumen');
+</script>

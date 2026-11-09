@@ -1,0 +1,45 @@
+table OcupacionHora
+	lineageTag: a0bb9f8d-5320-4c2f-918e-ad43aa116d89
+
+	column dia
+		dataType: string
+		summarizeBy: none
+		sourceColumn: dia
+		lineageTag: 7fdbf85a-e705-49e2-b53b-928dc4b41a79
+
+	column hora
+		dataType: string
+		summarizeBy: none
+		sourceColumn: hora
+		lineageTag: ded677d9-84d5-4fdc-ba74-e3988b57dfae
+
+	column ocupacion
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: ocupacion
+		lineageTag: 9c8887e4-feef-4b8e-aef5-105acec31d25
+		formatString: 0.0
+
+	column dia_nombre
+		dataType: string
+		summarizeBy: none
+		sourceColumn: dia_nombre
+		lineageTag: f22d8721-defe-451e-8bf6-d39e972b09e2
+		sortByColumn: dia
+
+	column hora_txt
+		dataType: string
+		summarizeBy: none
+		sourceColumn: hora_txt
+		lineageTag: 2621a4f9-23f5-4a04-a2a6-995fa4319814
+
+	partition OcupacionHora = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(Ruta & "OcupacionHora.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"dia", type text}, {"hora", type text}, {"ocupacion", type number}, {"dia_nombre", type text}, {"hora_txt", type text}}, "en-US")
+				in
+				    Tipos
+

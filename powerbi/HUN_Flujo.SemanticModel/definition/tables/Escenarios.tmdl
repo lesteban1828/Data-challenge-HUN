@@ -1,0 +1,68 @@
+table Escenarios
+	lineageTag: 7079e3ac-7713-4cb4-bb51-1d8de8eb9c20
+
+	column escenario
+		dataType: string
+		summarizeBy: none
+		sourceColumn: escenario
+		lineageTag: 5fcbfd53-0ba3-4c19-a28b-5871681b292c
+		sortByColumn: orden
+
+	column espera_media_h
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: espera_media_h
+		lineageTag: 174a9c59-5dcf-4b8c-af96-6ef36133852e
+		formatString: 0.0
+
+	column espera_p50_h
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: espera_p50_h
+		lineageTag: a0482948-db0b-4844-9212-76a3dd7a0142
+		formatString: 0.0
+
+	column espera_p90_h
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: espera_p90_h
+		lineageTag: 4d8d59e6-c887-4307-b05b-6542f801bfc2
+		formatString: 0.0
+
+	column pct_espera_mas_12h
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: pct_espera_mas_12h
+		lineageTag: bb522f2a-4d37-46ae-b2dd-207aeb2a7b96
+		formatString: 0.0
+
+	column cambio_pct
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: cambio_pct
+		lineageTag: 952d2d8f-1846-4760-a173-8796488eca23
+		formatString: 0.0
+
+	column orden
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: orden
+		lineageTag: 7c0caf5a-58ee-4c5a-a54e-6615359b4c73
+
+	column espera_grafico_h
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: espera_grafico_h
+		lineageTag: fff3000f-8f85-4591-9d70-31297bb0772a
+		formatString: 0.0
+
+	partition Escenarios = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(Ruta & "Escenarios.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"escenario", type text}, {"espera_media_h", type number}, {"espera_p50_h", type number}, {"espera_p90_h", type number}, {"pct_espera_mas_12h", type number}, {"cambio_pct", type number}, {"orden", Int64.Type}, {"espera_grafico_h", type number}}, "en-US")
+				in
+				    Tipos
+

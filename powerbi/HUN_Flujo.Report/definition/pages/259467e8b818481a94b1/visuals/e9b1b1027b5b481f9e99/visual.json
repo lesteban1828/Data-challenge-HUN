@@ -1,0 +1,104 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "e9b1b1027b5b481f9e99",
+  "position": {
+    "x": 646,
+    "y": 394,
+    "z": 4,
+    "height": 302,
+    "width": 610,
+    "tabOrder": 4
+  },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Congestion"
+                    }
+                  },
+                  "Property": "decil"
+                }
+              },
+              "queryRef": "Congestion.decil",
+              "nativeQueryRef": "decil"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Congestion"
+                        }
+                      },
+                      "Property": "espera_cama_h"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Congestion.espera_cama_h)",
+              "nativeQueryRef": "Sum of espera_cama_h",
+              "displayName": "Espera de cama"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Congestion"
+                        }
+                      },
+                      "Property": "estancia_observacion_h"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Congestion.estancia_observacion_h)",
+              "nativeQueryRef": "Sum of estancia_observacion_h",
+              "displayName": "Estancia en observación"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'La congestión alarga la espera de cama (h, por decil de ocupación)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,46 @@
+table PerfilDx
+	lineageTag: 17bc8196-ebd0-4d65-a2a3-7c59cbae967a
+
+	column dx_principal_nombre
+		dataType: string
+		summarizeBy: none
+		sourceColumn: dx_principal_nombre
+		lineageTag: 469b1327-6f8c-47b6-9dd4-7632d29677d7
+
+	column episodios
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: episodios
+		lineageTag: 8d8cf2ed-d5fa-487d-9226-25ce8fe3e44f
+
+	column estancia_p50_h
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: estancia_p50_h
+		lineageTag: ecfaaf76-ba63-496b-b51c-d72e3e4c3e8d
+		formatString: 0.0
+
+	column pct_hospitalizado
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: pct_hospitalizado
+		lineageTag: 32eaa8e6-1d22-4c27-94fb-abd28b4423b9
+		formatString: 0.0
+
+	column pct_reconsulta_72h
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: pct_reconsulta_72h
+		lineageTag: 52e1a973-ee73-40b7-acab-5bf8642a55d0
+		formatString: 0.0
+
+	partition PerfilDx = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(Ruta & "PerfilDx.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"dx_principal_nombre", type text}, {"episodios", Int64.Type}, {"estancia_p50_h", type number}, {"pct_hospitalizado", type number}, {"pct_reconsulta_72h", type number}}, "en-US")
+				in
+				    Tipos
+

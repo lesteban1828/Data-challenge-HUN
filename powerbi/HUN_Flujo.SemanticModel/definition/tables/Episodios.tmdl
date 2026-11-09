@@ -1,0 +1,266 @@
+table Episodios
+	lineageTag: dc8f23f2-f6d0-4491-b5af-0c0ac7cd822f
+
+	measure 'Episodios' = COUNTROWS ( Episodios )
+		formatString: #,0
+		lineageTag: 2a42d20a-cc31-4085-a7d9-5e11fc2b7fef
+
+	measure 'Episodios por día' = DIVIDE ( [Episodios], DISTINCTCOUNT ( Episodios[fecha] ) )
+		formatString: #,0
+		lineageTag: d857760a-5035-4435-9ceb-79e31456918a
+
+	measure 'Episodios válidos' = CALCULATE ( [Episodios], Episodios[los_atipica] = 0 )
+		formatString: #,0
+		lineageTag: 21f4bf41-306d-4649-a77d-64e2e6bf9a9a
+
+	measure '% hospitalizados' = DIVIDE ( CALCULATE ( [Episodios válidos], Episodios[hospitalizado] = 1 ), [Episodios válidos] )
+		formatString: 0.0%
+		lineageTag: 0436e246-8178-4920-941c-cec7db36e3a9
+
+	measure 'Espera de cama mediana (h)' = CALCULATE ( MEDIAN ( Episodios[h_hasta_hosp] ), Episodios[tipo_detalle] = "Urgencias → Hospitalización" )
+		formatString: 0.0
+		lineageTag: 20a133f5-c4b5-4b5b-aa14-516c18bbf2d2
+
+	measure 'Espera de cama P90 (h)' = CALCULATE ( PERCENTILEX.INC ( FILTER ( Episodios, NOT ISBLANK ( Episodios[h_hasta_hosp] ) ), Episodios[h_hasta_hosp], 0.9 ), Episodios[tipo_detalle] = "Urgencias → Hospitalización" )
+		formatString: 0.0
+		lineageTag: 6dff138c-1688-4e5c-86f1-d8958dffda89
+
+	measure 'Observación mediana (h)' = CALCULATE ( MEDIAN ( Episodios[los_h] ), Episodios[tipo_detalle] = "Urgencias con observación", Episodios[los_atipica] = 0 )
+		formatString: 0.0
+		lineageTag: bbf5d448-f5d4-44cd-9e3d-ec24676cf7a2
+
+	measure 'Estancia mediana (h)' = CALCULATE ( MEDIAN ( Episodios[los_h] ), Episodios[los_atipica] = 0 )
+		formatString: 0.0
+		lineageTag: 5df40cb0-ec70-4a83-82bc-2c2fee60889b
+
+	measure 'Estancia P90 (h)' = CALCULATE ( PERCENTILEX.INC ( Episodios, Episodios[los_h], 0.9 ), Episodios[los_atipica] = 0 )
+		formatString: 0.0
+		lineageTag: 9084803c-ee78-4ab5-ad18-342976fb3b20
+
+	measure '% atenciones breves' = DIVIDE ( CALCULATE ( [Episodios válidos], Episodios[tipo_detalle] = "Urgencias breve (<15 min)" ), [Episodios válidos] )
+		formatString: 0%
+		lineageTag: d4df3070-b5b1-4916-a977-23736c3e539d
+
+	measure '% reconsulta 72 h' = CALCULATE ( AVERAGE ( Episodios[reconsulta_72h] ), Episodios[los_atipica] = 0 )
+		formatString: 0.0%
+		lineageTag: 0d2e3e11-3f9d-4e21-897c-239864a9b343
+
+	measure 'Hospitalizados desde urgencias' = CALCULATE ( [Episodios], Episodios[tipo_detalle] = "Urgencias → Hospitalización" )
+		formatString: #,0
+		lineageTag: 1c275c87-4d1b-4790-8b0f-48ab4c4157f4
+
+	measure 'Pacientes en urgencias (promedio)' = AVERAGE ( OcupacionHora[ocupacion] )
+		formatString: #,0
+		lineageTag: 3ddc4788-88cd-4245-97e0-04bf1660ac2f
+
+	measure 'Pico de ocupación' = MAX ( OcupacionDiaria[pico] )
+		formatString: #,0
+		lineageTag: 13a80958-52eb-4964-a312-3a37fad26eed
+
+	measure 'Riesgo de saturación' = VAR p = MAX ( Pronostico[prob_saturacion] ) RETURN SWITCH ( TRUE (), p >= 50, "Alto", p >= 30, "Medio", "Bajo" )
+		lineageTag: ad5f1438-03a7-4fd0-a43d-0023e7e116ae
+
+	column episodio_id
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: episodio_id
+		lineageTag: 094c64cc-75df-4f32-88aa-082840d6274c
+
+	column fecha
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: fecha
+		lineageTag: 4307c24a-538d-4d4c-a855-4cf3fa5d4cf8
+		formatString: yyyy-mm-dd
+
+	column inicio
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: inicio
+		lineageTag: 7be23146-2338-4c9f-817b-98b72b40b734
+		formatString: yyyy-mm-dd hh:nn
+
+	column los_h
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: los_h
+		lineageTag: f2790fec-38fa-4b51-9e08-9b32064e13a0
+		formatString: 0.0
+
+	column tipo_episodio
+		dataType: string
+		summarizeBy: none
+		sourceColumn: tipo_episodio
+		lineageTag: de746279-3fda-408a-9e34-952670779f66
+
+	column tipo_detalle
+		dataType: string
+		summarizeBy: none
+		sourceColumn: tipo_detalle
+		lineageTag: 8c83e0ab-cf7c-4813-98ca-9364125abde1
+
+	column los_atipica
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: los_atipica
+		lineageTag: 41be5c66-ebe7-4055-bfcf-cfa3335e47eb
+
+	column hospitalizado
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: hospitalizado
+		lineageTag: d03b9b58-1687-4811-aa3e-e7d08cbac5fb
+
+	column h_triage
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: h_triage
+		lineageTag: f6da091c-9cdc-484f-92f2-72039f1651bb
+		formatString: 0.0
+
+	column h_atencion_urg
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: h_atencion_urg
+		lineageTag: c1a5dc92-ff60-44a4-a41f-273020297c87
+		formatString: 0.0
+
+	column h_hospitalizacion
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: h_hospitalizacion
+		lineageTag: 66ac3b7f-7eca-4a0f-a70d-1a04ea6fe71e
+		formatString: 0.0
+
+	column h_hasta_hosp
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: h_hasta_hosp
+		lineageTag: d7122921-5115-48e3-892c-017619f7427a
+		formatString: 0.0
+
+	column rango_espera_cama
+		dataType: string
+		summarizeBy: none
+		sourceColumn: rango_espera_cama
+		lineageTag: f93d1459-212c-4672-9740-8885ddacb206
+
+	column n_areas_urg
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: n_areas_urg
+		lineageTag: be49192d-7de1-4f70-af6b-0cc4f9579461
+
+	column n_labs
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: n_labs
+		lineageTag: c7abf60b-9c2a-47e0-8e64-d49e2b43b50f
+		formatString: 0.0
+
+	column n_dx
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: n_dx
+		lineageTag: bb7a01e5-ded0-4819-aff2-cba62cf934c0
+		formatString: 0.0
+
+	column n_proc
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: n_proc
+		lineageTag: 089d6b53-47cc-4b95-86b6-67c4df1dc016
+		formatString: 0.0
+
+	column edad
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: edad
+		lineageTag: dfcde9a4-ee94-491e-90fe-a71f10810b4e
+		formatString: 0.0
+
+	column grupo_edad
+		dataType: string
+		summarizeBy: none
+		sourceColumn: grupo_edad
+		lineageTag: 2787e489-43ac-4683-8a4c-1f27d1fc7133
+		sortByColumn: orden_edad
+
+	column sexo
+		dataType: string
+		summarizeBy: none
+		sourceColumn: sexo
+		lineageTag: e02f2343-5507-452c-b8db-1b5f63ddaa81
+
+	column hora_llegada
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: hora_llegada
+		lineageTag: c98c9983-9994-49ba-9772-4c898ae84f75
+
+	column dia_semana
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: dia_semana
+		lineageTag: 29bd9cc4-fc30-4073-903a-1a4e0b130bbf
+
+	column dia_nombre
+		dataType: string
+		summarizeBy: none
+		sourceColumn: dia_nombre
+		lineageTag: f38fd186-23ff-4c19-976b-f0a33b6266ab
+		sortByColumn: dia_semana
+
+	column franja
+		dataType: string
+		summarizeBy: none
+		sourceColumn: franja
+		lineageTag: 2fe50ddb-4461-4c88-a2b5-010538d2161e
+
+	column festivo
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: festivo
+		lineageTag: c680ce2a-9151-45ef-ba0a-fff46b53906a
+
+	column episodios_previos
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: episodios_previos
+		lineageTag: d5ba6781-e416-4734-a820-3824cfb85bef
+
+	column reconsulta_72h
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: reconsulta_72h
+		lineageTag: 9399b762-b7d1-4b52-8782-9fc0af278d1d
+
+	column ocupacion_urg_llegada
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: ocupacion_urg_llegada
+		lineageTag: e6d2b00c-501c-43fb-84bf-6e09b76d6a91
+		formatString: 0.0
+
+	column dx_principal_nombre
+		dataType: string
+		summarizeBy: none
+		sourceColumn: dx_principal_nombre
+		lineageTag: f0c3febc-b985-4337-9e5e-cdc17bf5f153
+
+	column orden_edad
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: orden_edad
+		lineageTag: 7292534c-7cdb-4d59-a0a7-7e56a3f10e89
+
+	partition Episodios = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(Ruta & "Episodios.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"episodio_id", Int64.Type}, {"fecha", type date}, {"inicio", type datetime}, {"los_h", type number}, {"tipo_episodio", type text}, {"tipo_detalle", type text}, {"los_atipica", Int64.Type}, {"hospitalizado", Int64.Type}, {"h_triage", type number}, {"h_atencion_urg", type number}, {"h_hospitalizacion", type number}, {"h_hasta_hosp", type number}, {"rango_espera_cama", type text}, {"n_areas_urg", Int64.Type}, {"n_labs", type number}, {"n_dx", type number}, {"n_proc", type number}, {"edad", type number}, {"grupo_edad", type text}, {"sexo", type text}, {"hora_llegada", Int64.Type}, {"dia_semana", Int64.Type}, {"dia_nombre", type text}, {"franja", type text}, {"festivo", Int64.Type}, {"episodios_previos", Int64.Type}, {"reconsulta_72h", Int64.Type}, {"ocupacion_urg_llegada", type number}, {"dx_principal_nombre", type text}, {"orden_edad", Int64.Type}}, "en-US")
+				in
+				    Tipos
+

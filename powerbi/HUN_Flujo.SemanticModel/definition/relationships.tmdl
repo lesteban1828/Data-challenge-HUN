@@ -1,0 +1,7 @@
+relationship 4ef98079-af62-4417-a870-3c69616aeeb3
+	fromColumn: Episodios.fecha
+	toColumn: Fecha.fecha
+
+relationship 31d416cc-b926-4038-ade8-51bcdb32c37f
+	fromColumn: OcupacionDiaria.fecha
+	toColumn: Fecha.fecha

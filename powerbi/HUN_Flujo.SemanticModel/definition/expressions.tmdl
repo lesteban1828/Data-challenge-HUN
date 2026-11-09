@@ -1,0 +1,4 @@
+expression Ruta = "D:\HUN_DataChallenge_datos\powerbi\" meta [IsParameterQuery = true, Type = "Text", IsParameterQueryRequired = true]
+	lineageTag: c0f3af31-be0a-4269-8758-0d45a815f9d4
+
+	annotation PBI_ResultType = Text
