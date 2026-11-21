@@ -12,6 +12,22 @@ ocupación horaria        (factores de demora)    saturación + alerta      (imp
 
 Detalle completo en [`docs/01_posibles_soluciones.md`](docs/01_posibles_soluciones.md).
 
+## Dashboard interactivo (web)
+
+**[Abrir el dashboard →](https://lesteban1828.github.io/Data-challenge-HUN/)** · código en [`dashboard/`](dashboard/) · solo datos agregados, sin información de pacientes.
+
+| Página | Qué se puede hacer |
+|---|---|
+| Resumen | Filtrar por periodo (año, últimos 12 meses o rango libre): los KPI se recalculan y muestran la variación. Clic en un mes o en un tipo de episodio para ver su detalle. |
+| Flujo | Diagrama Sankey del recorrido (llegada → triage → atención → hospitalización) con reprocesos y retornos. Deslizador de **meta de espera de cama**: muestra qué % de pacientes la cumple. |
+| Congestión | Mapas de calor día × hora con detalle al pasar el cursor; clic en un día para ver el desfase entre llegadas y ocupación. Umbral de saturación ajustable. |
+| Factores | SHAP de los 3 modelos y número de variables ajustable; tabla de diagnósticos con búsqueda, orden y comparación contra el promedio. |
+| Pronóstico | Real vs Holt-Winters/LightGBM. Umbral de alerta ajustable con **matriz de confusión en vivo** (aciertos, falsas alarmas y días no detectados). |
+| Simulador | **Simulación de la cola de camas en el navegador**, calibrada con el notebook 06: camas, estancia, hora del alta y demanda. Escenarios predefinidos y recomendaciones que se cargan con un clic. |
+
+Atajos: <kbd>←</kbd> <kbd>→</kbd> cambian de página, <kbd>P</kbd> activa el modo presentación y cada gráfico se descarga como PNG.
+Cada página tiene su propio enlace para compartir (`#flujo`, `#escenarios`…).
+
 ## Estructura
 
 ```
@@ -87,7 +103,7 @@ Guía de conexión: [`docs/04_conexion_vpn_dbeaver.md`](docs/04_conexion_vpn_dbe
 - [x] Documentación del proyecto (`docs/hallazgos.md` y documento final)
 - [x] Repositorio GitHub
 - [x] Dashboard Power BI (`powerbi/HUN_Flujo.pbip`)
-- Complemento: dashboard web (`dashboard/index.html`, solo datos agregados)
+- [x] Dashboard web interactivo con simulador what-if (`dashboard/`, publicado con GitHub Pages)
 
 ## Equipo
 
